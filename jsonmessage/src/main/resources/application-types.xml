@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="HelloWorld" format="json">
+      <types:shape format="weave" example="examples/hello.json"><![CDATA[%dw 2.0
+
+type HelloWorld = {|
+  greeting: String, 
+  name: String
+|} {"example": "{\\\"greeting\\\":\\\"hello\\\",\\\"name\\\":\\\"world\\\"}"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#8a790055-62e1-4e45-8345-5500dad7d533">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="HelloWorld"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#0a3024ad-be35-46b6-b8f2-e2260f7af332">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="HelloWorld"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#54f6dea0-05d8-4865-ab9d-f705e5fb66d3">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="HelloWorld"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

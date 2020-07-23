@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:solace="http://www.mulesoft.org/schema/mule/solace" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/solace http://www.mulesoft.org/schema/mule/solace/current/mule-solace.xsd">
+	<solace:config name="Solace_Connector_Config" doc:name="Solace-Connector Config" doc:id="58c3619e-4417-4048-933d-be1619b8337b" >
+		<solace:connection brokerHost="localhost" msgVPN="default" clientUserName="mulesoft-client" password="test"/>
+	</solace:config>
+	<flow name="consumeFlow" doc:id="7f51a259-92b7-4fde-b730-bcedb6c41d4a" >
+		<scheduler doc:name="Scheduler" doc:id="6fda9221-00ae-4efb-8406-f896ea22715f" >
+			<scheduling-strategy >
+				<fixed-frequency frequency="5" startDelay="3" timeUnit="SECONDS"/>
+			</scheduling-strategy>
+		</scheduler>
+		<solace:consume doc:name="Consume" doc:id="43504249-5f84-4f84-8aa1-6e6085e55dc8" config-ref="Solace_Connector_Config" endpoint="q/consumeexample"/>
+		<logger level="INFO" doc:name="Logger" doc:id="7193ece4-1bf3-4854-b7c7-29ace559a8a7" category="CONSUME OPERATION - " message="#[%dw 2.0
+output application/java
+---
+payload]"/>
+	</flow>
+	<flow name="produceFlow" doc:id="fe72f45d-06c0-4cf9-8d97-534bad57d37b" >
+		<scheduler doc:name="Scheduler" doc:id="f45da31a-9e51-4b36-9482-be7ffee0b26c" >
+			<scheduling-strategy >
+				<fixed-frequency frequency="5" timeUnit="SECONDS"/>
+			</scheduling-strategy>
+		</scheduler>
+		<solace:publish-guaranteed doc:name="Publish guaranteed" doc:id="f5b99e31-0916-4a9c-8ed2-fc020008da54" config-ref="Solace_Connector_Config" endpoint="q/consumeexample" provisionQueue="true">
+			<solace:message >
+				<solace:body ><![CDATA[Hello Consume]]></solace:body>
+			</solace:message>
+		</solace:publish-guaranteed>
+	</flow>
+</mule>

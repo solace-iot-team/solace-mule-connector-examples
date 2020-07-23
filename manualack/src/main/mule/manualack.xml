@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:solace="http://www.mulesoft.org/schema/mule/solace" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/solace http://www.mulesoft.org/schema/mule/solace/current/mule-solace.xsd">
+	<solace:config name="Solace_Connector_Config" doc:name="Solace-Connector Config" doc:id="543a11ed-7a03-47aa-ada2-038bc92fe260" ackMode="MANUAL_CLIENT">
+		<solace:connection brokerHost="localhost" msgVPN="default" clientUserName="mulesoft-client" password="default" />
+	</solace:config>
+	<flow name="manualackFlow" doc:id="36ed6351-23bc-4110-8dab-a20718c4d4cb" >
+		<solace:consumer-source doc:name="OnGuaranteedMessage" doc:id="2b689658-5b5d-439d-914b-25b106c3b1b9" config-ref="Solace_Connector_Config" endpoint="q/manualack" provisionEndpoint="true"/>
+		<logger level="INFO" doc:name="Logger" doc:id="084521fd-4b98-4291-9ab4-9d6fe236f5b4" message="Got a message" category="MANUALACK - "/>
+		<logger level="INFO" doc:name="Logger" doc:id="115f579c-3b71-47a0-86eb-45c0312472b6" message='#[%dw 2.0
+import * from dw::Runtime
+---
+"Acking message" wait 4000]' category="MANUALACK - "/>
+		<solace:ack doc:name="Ack" doc:id="2d5b5274-a540-46a7-9779-7f1dd027e188" config-ref="Solace_Connector_Config" messageId="#[%dw 2.0
+output application/java
+---
+attributes.messageId]"/>
+		<logger level="INFO" doc:name="Logger" doc:id="1c733569-ec08-4bfb-bdf3-a5ab73396a4d" message="#[%dw 2.0
+output application/java
+---
+payload]" category="MANUALACK - "/>
+	</flow>
+	<flow name="publishFlow" doc:id="42145c53-564f-42a1-bce7-23624d7fe6d7" >
+		<scheduler doc:name="Scheduler" doc:id="a785b79d-955f-443b-9268-c05174f121a7" >
+			<scheduling-strategy >
+				<fixed-frequency frequency="30" timeUnit="SECONDS"/>
+			</scheduling-strategy>
+		</scheduler>
+		<solace:publish-guaranteed doc:name="Publish guaranteed" doc:id="c9e78354-c68a-49c1-b337-12a187505de0" config-ref="Solace_Connector_Config" provisionQueue="true" endpoint="q/manualack">
+			<solace:message >
+				<solace:body ><![CDATA[A guaranteed message]]></solace:body>
+			</solace:message>
+		</solace:publish-guaranteed>
+	</flow>
+</mule>

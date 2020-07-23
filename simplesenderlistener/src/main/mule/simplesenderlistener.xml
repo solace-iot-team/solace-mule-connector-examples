@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:solace="http://www.mulesoft.org/schema/mule/solace" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/solace http://www.mulesoft.org/schema/mule/solace/current/mule-solace.xsd">
+	<solace:config name="Solace_Connector_Config" doc:name="Solace-Connector Config" doc:id="82eaff3b-df65-45f6-8808-a9a3dab85a9b" >
+		<solace:connection brokerHost="localhost" msgVPN="default" clientUserName="mule-flow" password="admin" />
+	</solace:config>
+	<flow name="directListener" doc:id="53b06c09-fc46-4ff2-8ac8-b1ca0c41afdc" >
+		<solace:listener-source doc:name="OnDirectMessage" doc:id="16c92325-b504-4a5d-bc43-f002fa1aff76" config-ref="Solace_Connector_Config">
+			<solace:subscriptions >
+				<solace:subscription value="t/simple/direct" />
+			</solace:subscriptions>
+		</solace:listener-source>
+		<logger level="INFO" doc:name="Logger" doc:id="247815b7-4673-4175-b9f9-45326c19cb9b" category="DIRECT-SOURCE - " message="#[%dw 2.0
+output application/java
+---
+payload]"/>
+	</flow>
+	<flow name="guaranteedListener" doc:id="db8c15d3-8bae-4bf7-be46-87c8844eeef9" >
+		<solace:consumer-source doc:name="OnGuaranteedMessage" doc:id="7d9e6418-9e28-46e6-8bf9-2fa0c3f2e052" config-ref="Solace_Connector_Config" endpoint="q/simple" subscription="t/simple/direct" provisionEndpoint="true"/>
+		<logger level="INFO" doc:name="Logger" doc:id="03806b02-4463-4e3e-9f1b-ad151d632eea" category="GUARANTEED-SOURCE - " message="#[%dw 2.0
+output application/java
+---
+payload]"/>
+	</flow>
+	<flow name="simplesenderFlow" doc:id="417709dd-5a5a-4f5c-a9db-30c68f68a33a" initialState="started">
+		<scheduler doc:name="Scheduler" doc:id="9becde31-1563-4cc8-b14b-c200b039e158" >
+			<scheduling-strategy >
+				<fixed-frequency frequency="5" startDelay="5" timeUnit="SECONDS"/>
+			</scheduling-strategy>
+		</scheduler>
+		<solace:publish-direct doc:name="Publish direct" doc:id="eaa3fc12-ad96-41a8-9c24-024a8bcf3706" config-ref="Solace_Connector_Config" topic="t/simple/direct">
+			<solace:message >
+				<solace:body ><![CDATA[Hello listeners]]></solace:body>
+			</solace:message>
+		</solace:publish-direct>
+	</flow>
+</mule>
