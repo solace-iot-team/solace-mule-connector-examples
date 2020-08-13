@@ -9,6 +9,10 @@ It contains the following flows:
 * Manual Message Acknowledgement
 * Complex message - JSON payload
 
+## Connector Documentation
+For your reference of the documentation of the connector can be found at:
+https://github.com/solace-iot-team/solace-mule-connector/blob/master/README.md
+
 ## How to import & run the examples
 
 ### Clone git repository
