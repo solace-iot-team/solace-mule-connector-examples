@@ -8,7 +8,7 @@ http://www.mulesoft.org/schema/mule/solace http://www.mulesoft.org/schema/mule/s
 		<solace:connection brokerHost="localhost" msgVPN="default" clientUserName="mulesoft-client" password="default" />
 	</solace:config>
 	<flow name="manualackFlow" doc:id="36ed6351-23bc-4110-8dab-a20718c4d4cb" >
-		<solace:consumer-source doc:name="OnGuaranteedMessage" doc:id="2b689658-5b5d-439d-914b-25b106c3b1b9" config-ref="Solace_Connector_Config" endpoint="q/manualack" provisionEndpoint="true"/>
+		<solace:consumer-source doc:name="OnGuaranteedMessage" doc:id="2b689658-5b5d-439d-914b-25b106c3b1b9" config-ref="Solace_Connector_Config" address="q/manualack" provisionEndpoint="true" endpoint-type="QUEUE"/>
 		<logger level="INFO" doc:name="Logger" doc:id="084521fd-4b98-4291-9ab4-9d6fe236f5b4" message="Got a message" category="MANUALACK - "/>
 		<logger level="INFO" doc:name="Logger" doc:id="115f579c-3b71-47a0-86eb-45c0312472b6" message='#[%dw 2.0
 import * from dw::Runtime
@@ -26,13 +26,13 @@ payload]" category="MANUALACK - "/>
 	<flow name="publishFlow" doc:id="42145c53-564f-42a1-bce7-23624d7fe6d7" >
 		<scheduler doc:name="Scheduler" doc:id="a785b79d-955f-443b-9268-c05174f121a7" >
 			<scheduling-strategy >
-				<fixed-frequency frequency="30" timeUnit="SECONDS"/>
+				<fixed-frequency frequency="3" timeUnit="SECONDS"/>
 			</scheduling-strategy>
 		</scheduler>
-		<solace:publish-guaranteed doc:name="Publish guaranteed" doc:id="c9e78354-c68a-49c1-b337-12a187505de0" config-ref="Solace_Connector_Config" provisionQueue="true" endpoint="q/manualack">
+		<solace:publish doc:name="Publish guaranteed" doc:id="c9e78354-c68a-49c1-b337-12a187505de0" config-ref="Solace_Connector_Config" provisionQueue="true" address="q/manualack" delivery-mode="PERSISTENT" endpoint-type="QUEUE">
 			<solace:message >
 				<solace:body ><![CDATA[A guaranteed message]]></solace:body>
 			</solace:message>
-		</solace:publish-guaranteed>
+		</solace:publish>
 	</flow>
 </mule>

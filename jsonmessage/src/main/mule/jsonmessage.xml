@@ -14,10 +14,10 @@ http://www.mulesoft.org/schema/mule/solace http://www.mulesoft.org/schema/mule/s
 			</scheduling-strategy>
 		</scheduler>
 		<set-payload value='{"greeting": "hello","name": "solace"}' doc:name="Set Payload" doc:id="0a3024ad-be35-46b6-b8f2-e2260f7af332" mimeType="application/json"/>
-		<solace:publish-direct doc:name="Publish direct" doc:id="8a790055-62e1-4e45-8345-5500dad7d533" config-ref="Solace_Connector_Config" topic="t/json/greeting"/>
+		<solace:publish doc:name="Publish direct" doc:id="8a790055-62e1-4e45-8345-5500dad7d533" config-ref="Solace_Connector_Config" address="t/json/greeting"/>
 	</flow>
 	<flow name="jsonListenerFlow" doc:id="d23a26fe-a7e4-4585-99f3-8bed5cee4762" >
-		<solace:listener-source doc:name="OnDirectMessage" doc:id="54f6dea0-05d8-4865-ab9d-f705e5fb66d3" config-ref="Solace_Connector_Config">
+		<solace:listener-source doc:name="OnDirectMessage" doc:id="54f6dea0-05d8-4865-ab9d-f705e5fb66d3" config-ref="Solace_Connector_Config" contentType="application/json">
 			<solace:subscriptions >
 				<solace:subscription value="t/json/greeting" />
 			</solace:subscriptions>

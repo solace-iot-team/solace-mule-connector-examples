@@ -20,7 +20,7 @@ http://www.mulesoft.org/schema/mule/solace http://www.mulesoft.org/schema/mule/s
 output application/java
 ---
 payload]" category="RESPONDER - "/>
-		<solace:publish-direct doc:name="Publish direct" doc:id="f604d586-d8a5-4fba-87dc-b68f1c3fb337" config-ref="Solace_Connector_Config" topic="#[%dw 2.0
+		<solace:publish doc:name="Publish direct" doc:id="f604d586-d8a5-4fba-87dc-b68f1c3fb337" config-ref="Solace_Connector_Config" address="#[%dw 2.0
 output application/java
 ---
 attributes.replyTo]">
@@ -30,7 +30,7 @@ output application/java
 attributes.correlationId]" markReply="true">
 				<solace:body ><![CDATA[This is the response]]></solace:body>
 			</solace:message>
-		</solace:publish-direct>
+		</solace:publish>
 	</flow>
 	<flow name="requestFlow" doc:id="09a58695-55ac-454f-9fd6-1c009f98188e" >
 		<scheduler doc:name="Scheduler" doc:id="9c6405c1-47d4-4d2f-862e-89faf6c1a43a" >
@@ -38,11 +38,11 @@ attributes.correlationId]" markReply="true">
 				<fixed-frequency frequency="5" timeUnit="SECONDS" startDelay="3"/>
 			</scheduling-strategy>
 		</scheduler>
-		<solace:request-reply-direct doc:name="Request reply direct" doc:id="b0bf9d7f-9f26-42dd-95aa-2dffc6aeb8ea" config-ref="Solace_Connector_Config" topic="t/example/request" timeOut="4" timeUnit="SECONDS">
+		<solace:request-reply doc:name="Request reply direct" doc:id="b0bf9d7f-9f26-42dd-95aa-2dffc6aeb8ea" config-ref="Solace_Connector_Config" address="t/example/request" timeOut="15" timeUnit="SECONDS">
 			<solace:message >
 				<solace:body ><![CDATA[Hello responder]]></solace:body>
 			</solace:message>
-		</solace:request-reply-direct>
+		</solace:request-reply>
 		<logger level="INFO" doc:name="Logger" doc:id="15c0c942-c60d-4cba-8745-17f0923f1e92" category="REQUESTOR - " message="#[%dw 2.0
 output application/java
 ---

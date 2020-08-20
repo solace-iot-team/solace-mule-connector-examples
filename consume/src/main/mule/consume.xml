@@ -13,7 +13,7 @@ http://www.mulesoft.org/schema/mule/solace http://www.mulesoft.org/schema/mule/s
 				<fixed-frequency frequency="5" startDelay="3" timeUnit="SECONDS"/>
 			</scheduling-strategy>
 		</scheduler>
-		<solace:consume doc:name="Consume" doc:id="43504249-5f84-4f84-8aa1-6e6085e55dc8" config-ref="Solace_Connector_Config" endpoint="q/consumeexample"/>
+		<solace:consume doc:name="Consume" doc:id="43504249-5f84-4f84-8aa1-6e6085e55dc8" config-ref="Solace_Connector_Config" address="q/consumeexample" endpoint-type="QUEUE"/>
 		<logger level="INFO" doc:name="Logger" doc:id="7193ece4-1bf3-4854-b7c7-29ace559a8a7" category="CONSUME OPERATION - " message="#[%dw 2.0
 output application/java
 ---
@@ -25,10 +25,10 @@ payload]"/>
 				<fixed-frequency frequency="5" timeUnit="SECONDS"/>
 			</scheduling-strategy>
 		</scheduler>
-		<solace:publish-guaranteed doc:name="Publish guaranteed" doc:id="f5b99e31-0916-4a9c-8ed2-fc020008da54" config-ref="Solace_Connector_Config" endpoint="q/consumeexample" provisionQueue="true">
+		<solace:publish doc:name="Publish" doc:id="f5b99e31-0916-4a9c-8ed2-fc020008da54" config-ref="Solace_Connector_Config" address="q/consumeexample" provisionQueue="true" delivery-mode="PERSISTENT" endpoint-type="QUEUE">
 			<solace:message >
 				<solace:body ><![CDATA[Hello Consume]]></solace:body>
 			</solace:message>
-		</solace:publish-guaranteed>
+		</solace:publish>
 	</flow>
 </mule>

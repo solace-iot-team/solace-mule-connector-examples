@@ -19,7 +19,7 @@ output application/java
 payload]"/>
 	</flow>
 	<flow name="guaranteedListener" doc:id="db8c15d3-8bae-4bf7-be46-87c8844eeef9" >
-		<solace:consumer-source doc:name="OnGuaranteedMessage" doc:id="7d9e6418-9e28-46e6-8bf9-2fa0c3f2e052" config-ref="Solace_Connector_Config" endpoint="q/simple" subscription="t/simple/direct" provisionEndpoint="true"/>
+		<solace:consumer-source doc:name="OnGuaranteedMessage" doc:id="7d9e6418-9e28-46e6-8bf9-2fa0c3f2e052" config-ref="Solace_Connector_Config" address="q/simple" subscription="t/simple/direct" provisionEndpoint="true" endpoint-type="QUEUE"/>
 		<logger level="INFO" doc:name="Logger" doc:id="03806b02-4463-4e3e-9f1b-ad151d632eea" category="GUARANTEED-SOURCE - " message="#[%dw 2.0
 output application/java
 ---
@@ -31,10 +31,10 @@ payload]"/>
 				<fixed-frequency frequency="5" startDelay="5" timeUnit="SECONDS"/>
 			</scheduling-strategy>
 		</scheduler>
-		<solace:publish-direct doc:name="Publish direct" doc:id="eaa3fc12-ad96-41a8-9c24-024a8bcf3706" config-ref="Solace_Connector_Config" topic="t/simple/direct">
+		<solace:publish doc:name="Publish direct" doc:id="eaa3fc12-ad96-41a8-9c24-024a8bcf3706" config-ref="Solace_Connector_Config" address="t/simple/direct">
 			<solace:message >
 				<solace:body ><![CDATA[Hello listeners]]></solace:body>
 			</solace:message>
-		</solace:publish-direct>
+		</solace:publish>
 	</flow>
 </mule>
